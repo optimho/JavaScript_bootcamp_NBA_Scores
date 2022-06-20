@@ -83,9 +83,43 @@ const warriorsGames = [{
     }
   }
 ]
+const getScoreLine = ({homeTeam, awayTeam}) => {
 
-const ulParent = document.createElement('ul')
-for (let game of warriorsGames){
-  const {homeTeam, awayTeam} = game
-  console.log(awayTeam.team)
+  let scoreLine;
+  const {team: hTeam, points: hPts} = homeTeam;
+  const {team: aTeam, points: aPts} = awayTeam;
+  const teamNames = `${aTeam}  @  ${hTeam}`;
+
+  if (aPts > hPts) {
+    scoreLine = `<b>${aPts}</b> - ${hPts}`;
+  } else {
+    scoreLine = `${aPts} - <b>${hPts}</b>`;
+  }
+  return `${teamNames} ${scoreLine}`
 }
+
+
+const isWinner = ({homeTeam, awayTeam}, targetTeam) =>{
+  const confirmWinner = homeTeam.team === targetTeam ? homeTeam : awayTeam;
+  return confirmWinner
+}
+
+
+const makeChart = (gameData, targetTeam) => {
+  const ulParent = document.createElement('ul')
+
+  for (let game of gameData) {
+    const gameLI = document.createElement('li');
+    gameLI.innerHTML = getScoreLine(game)
+    gameLI.classList.add(isWinner(game, targetTeam).isWinner ? 'win' : 'loss');
+    ulParent.appendChild(gameLI)
+
+
+  }
+  return ulParent
+}
+const chart1 = makeChart(warriorsGames, 'Golden State');
+document.querySelector('#gs').append(chart1)
+
+const chart2 = makeChart(warriorsGames, 'Houston');
+document.querySelector('#hr').append(chart2)
